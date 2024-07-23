@@ -1,11 +1,12 @@
 import { Inter } from "next/font/google";
+import Head from 'next/head';
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Net Socials",
-  description: "Net Socials subscription page",
+  description: "Net Socials is a social tennis club based in London. Our goal is to serve up connections and community.",
 };
 
 export default function RootLayout({ children }) {
