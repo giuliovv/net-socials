@@ -54,7 +54,7 @@ function CheckoutContent() {
 
   return (
     <Elements options={options} stripe={stripePromise}>
-      <CheckoutForm clientSecret={clientSecret} />
+      <CheckoutForm location={location} clientSecret={clientSecret} />
     </Elements>
   );
 }
@@ -62,7 +62,7 @@ function CheckoutContent() {
 export default function CheckoutClient() {
   return (
     <Suspense fallback={<div>Loading checkout...</div>}>
-      <CheckoutContent />
+      <CheckoutContent/>
     </Suspense>
   );
 }

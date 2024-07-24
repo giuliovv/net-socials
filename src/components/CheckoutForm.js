@@ -1,10 +1,21 @@
 // src/components/CheckoutForm.js
 
 import { useState } from 'react';
-import { useStripe, useElements, CardElement, ExpressCheckoutElement } from '@stripe/react-stripe-js';
+import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import { useRouter } from 'next/navigation';
+import { firestore } from '../firebase';
+import { doc, setDoc, collection, Timestamp } from 'firebase/firestore';
 
-export default function CheckoutForm({ clientSecret }) {
+const getNextFriday = (date) => {
+  const dayOfWeek = date.getUTCDay();
+  const daysUntilFriday = (5 - dayOfWeek + 7) % 7 || 7;
+  const nextFriday = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
+  nextFriday.setUTCDate(date.getUTCDate() + daysUntilFriday);
+  nextFriday.setUTCHours(23, 30, 0, 0); // Set time to 11:30 PM UTC
+  return nextFriday;
+};
+
+export default function CheckoutForm({ clientSecret, location }) {
   const stripe = useStripe();
   const elements = useElements();
   const router = useRouter();
@@ -47,6 +58,18 @@ export default function CheckoutForm({ clientSecret }) {
     }
 
     if (paymentIntent.status === 'succeeded') {
+      const nextFriday = getNextFriday(new Date());
+      const bookingRef = doc(collection(firestore, 'bookings'));
+      await setDoc(bookingRef, {
+        locationId: location.id,
+        locationName: location.name,
+        date: Timestamp.fromDate(nextFriday),
+        person: {
+          name,
+          level: tennisLevel,
+        },
+      });
+
       // Redirect to success page
       router.push('/success');
     }
@@ -61,7 +84,6 @@ export default function CheckoutForm({ clientSecret }) {
     style: {
       base: {
         color: '#ffffff', // Set text color to white
-        backgroundColor: '#000000', // Set background color to black
         '::placeholder': {
           color: '#a0aec0', // Set placeholder color
         },
