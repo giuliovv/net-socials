@@ -1,4 +1,5 @@
-'use client';
+// src/components/CheckoutClient.js
+"use client"
 
 import { useState, useEffect } from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -53,7 +54,7 @@ function CheckoutContent() {
 
   return (
     <Elements options={options} stripe={stripePromise}>
-      <CheckoutForm />
+      <CheckoutForm clientSecret={clientSecret} />
     </Elements>
   );
 }

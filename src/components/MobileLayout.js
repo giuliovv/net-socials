@@ -1,7 +1,11 @@
+// src/components/MobileLayout.js
+
 import { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { locations } from '../utils/constants';
+import Header from './Header';
+import Footer from './Footer';
 
 export default function MobileLayout() {
   const [selectedLocation, setActiveLocation] = useState(null);
@@ -13,24 +17,13 @@ export default function MobileLayout() {
 
   const handleBookNowClick = () => {
     if (selectedLocation) {
-      // router.push({pathname: `/checkout`, query: { id: selectedLocation.id }});
-      // router.push(`/checkout`);
       router.push(`/checkout?id=${selectedLocation.id}`);
     }
   };
 
   return (
     <div className="min-h-screen bg-black text-white">
-      <header className="p-4 flex items-center justify-center mt-4"> {/* Added mt-4 for top margin */}
-        <div className="relative w-40 h-20"> {/* Adjust width and height as needed */}
-          <Image 
-            src="/images/logo-white.png" 
-            alt="NET SOCIAL Logo" 
-            layout="fill" 
-            objectFit="contain" 
-          />
-        </div>
-      </header>
+      <Header />
 
       <main className="p-4">
         <h2 className="text-5xl font-bold mb-6 text-center opacity-50">PLAY</h2>
@@ -45,8 +38,8 @@ export default function MobileLayout() {
                 <Image
                   src={location.image}
                   alt={location.name}
-                  layout="fill"
-                  objectFit="cover"
+                  fill
+                  style={{objectFit:"cover"}}
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center">
                   <span className="text-2xl font-bold">{location.name}</span>
@@ -55,7 +48,7 @@ export default function MobileLayout() {
               {selectedLocation === location && (
                 <div className="mt-2 p-4 bg-gray-800 rounded-lg">
                   <p>Details about {location.name}</p>
-                  <button onClick={handleBookNowClick}  className="mt-2 px-4 py-2 bg-white text-black font-bold rounded">
+                  <button onClick={handleBookNowClick} className="mt-2 px-4 py-2 bg-white text-black font-bold rounded">
                     Book Now
                   </button>
                 </div>
@@ -64,6 +57,8 @@ export default function MobileLayout() {
           ))}
         </div>
       </main>
+
+      <Footer />
     </div>
   );
 }

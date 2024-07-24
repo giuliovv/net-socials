@@ -4,6 +4,8 @@ import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { locations } from '../utils/constants';
+import Header from './Header';
+import Footer from './Footer';
 
 export default function DesktopLayout() {
   const [selectedLocation, setSelectedLocation] = useState(null);
@@ -36,8 +38,6 @@ export default function DesktopLayout() {
 
   const handleBookNowClick = () => {
     if (selectedLocation) {
-      // router.push({pathname: `/checkout`, query: { id: selectedLocation.id }});
-      // router.push(`/checkout`);
       router.push(`/checkout?id=${selectedLocation.id}`);
     }
   };
@@ -46,9 +46,7 @@ export default function DesktopLayout() {
     <div className="min-h-screen bg-black text-white overflow-hidden">
       <div ref={cursorRef} className="custom-cursor"></div>
       
-      <header className="fixed top-0 left-0 w-full z-50 p-8">
-        <Image src="/images/logo-white.png" alt="NET SOCIAL Logo" width={100} height={50} />
-      </header>
+      <Header />
 
       <main className="relative h-screen flex">
         <div className="absolute inset-0 flex items-center justify-center">
@@ -68,8 +66,8 @@ export default function DesktopLayout() {
                   <Image
                     src={location.image}
                     alt={location.name}
-                    layout="fill"
-                    objectFit="cover"
+                    fill
+                    style={{objectFit:"cover"}}
                     className="transition-transform duration-500 hover:scale-110"
                   />
                   <div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
@@ -86,8 +84,8 @@ export default function DesktopLayout() {
             <Image
               src="/images/london-map.jpg"
               alt="London Map"
-              layout="fill"
-              objectFit="contain"
+              fill
+              style={{objectFit:"contain"}}
             />
             {locations.map((location) => (
               <div
@@ -112,28 +110,7 @@ export default function DesktopLayout() {
         </div>
       )}
 
-      {/* <style jsx global>{`
-        body {
-          cursor: none;
-        }
-        .custom-cursor {
-          width: 20px;
-          height: 20px;
-          border: 2px solid white;
-          border-radius: 50%;
-          position: fixed;
-          pointer-events: none;
-          z-index: 9999;
-          transition: all 0.1s ease;
-          transform: translate(-50%, -50%);
-        }
-        .location-card:hover ~ .custom-cursor,
-        .absolute:hover ~ .custom-cursor {
-          transform: translate(-50%, -50%) scale(1.5);
-          background-color: white;
-          mix-blend-mode: difference;
-        }
-      `}</style> */}
+      {/* <Footer /> */}
     </div>
   );
 }
