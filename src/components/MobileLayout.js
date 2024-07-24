@@ -25,7 +25,7 @@ export default function MobileLayout() {
     <div className="min-h-screen bg-black text-white">
       <Header />
 
-      <main className="p-4">
+      <main className="p-4 mt-32">
         <h2 className="text-5xl font-bold mb-6 text-center opacity-50">PLAY</h2>
         
         <div className="space-y-4">
