@@ -1,11 +1,15 @@
+// src/components/DesktopLayout.js
+
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { locations } from '../utils/constants'
+import { useRouter } from 'next/navigation'; // Ensure this is imported
+import { locations } from '../utils/constants';
 
 export default function DesktopLayout() {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const cursorRef = useRef(null);
+  const router = useRouter(); // Ensure this hook is called within the Next.js context
 
   useEffect(() => {
     const handleMouseMove = (event) => {
@@ -30,12 +34,20 @@ export default function DesktopLayout() {
     console.log(`Selected location: ${location.name}`);
   };
 
+  const handleBookNowClick = () => {
+    if (selectedLocation) {
+      // router.push({pathname: `/checkout`, query: { id: selectedLocation.id }});
+      // router.push(`/checkout`);
+      router.push(`/checkout?id=${selectedLocation.id}`);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden">
       <div ref={cursorRef} className="custom-cursor"></div>
       
       <header className="fixed top-0 left-0 w-full z-50 p-8">
-      <Image src="/images/logo-white.png" alt="NET SOCIAL Logo" width={100} height={50} />
+        <Image src="/images/logo-white.png" alt="NET SOCIAL Logo" width={100} height={50} />
       </header>
 
       <main className="relative h-screen flex">
@@ -50,7 +62,6 @@ export default function DesktopLayout() {
                 key={location.id}
                 className="location-card"
                 onMouseEnter={() => setSelectedLocation(location)}
-                // onMouseLeave={() => setSelectedLocation(null)}
                 onClick={() => handleLocationSelect(location)}
               >
                 <div className="relative w-64 h-64 overflow-hidden">
@@ -84,7 +95,6 @@ export default function DesktopLayout() {
                 className={`absolute w-4 h-4 bg-red-500 rounded-full cursor-pointer transition-all duration-300 ${selectedLocation === location ? 'scale-150' : 'scale-100'}`}
                 style={{ left: `${location.coordinates.x}%`, top: `${location.coordinates.y}%` }}
                 onMouseEnter={() => setSelectedLocation(location)}
-                onMouseLeave={() => setSelectedLocation(null)}
                 onClick={() => handleLocationSelect(location)}
               ></div>
             ))}
@@ -95,11 +105,10 @@ export default function DesktopLayout() {
       {selectedLocation && (
         <div className="fixed bottom-8 left-8 z-50">
           <h3 className="text-2xl font-bold">{selectedLocation.name}</h3>
-          <a href={selectedLocation.link}>
-            <button className="mt-2 px-4 py-2 bg-white text-black font-bold hover:bg-opacity-80 transition-colors duration-300">
-              Book Now
-            </button>
-          </a>
+          <button onClick={handleBookNowClick} 
+            className="mt-2 px-4 py-2 bg-white text-black font-bold hover:bg-opacity-80 transition-colors duration-300">
+            Book Now
+          </button>
         </div>
       )}
 
