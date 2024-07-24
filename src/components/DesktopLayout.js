@@ -2,14 +2,14 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation'; // Ensure this is imported
+import { useRouter } from 'next/navigation';
 import { locations } from '../utils/constants';
 
 export default function DesktopLayout() {
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const cursorRef = useRef(null);
-  const router = useRouter(); // Ensure this hook is called within the Next.js context
+  const router = useRouter();
 
   useEffect(() => {
     const handleMouseMove = (event) => {

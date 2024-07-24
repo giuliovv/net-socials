@@ -1,12 +1,22 @@
 import { useState } from 'react';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { locations } from '../utils/constants';
 
 export default function MobileLayout() {
-  const [activeLocation, setActiveLocation] = useState(null);
+  const [selectedLocation, setActiveLocation] = useState(null);
+  const router = useRouter();
 
   const handleLocationClick = (location) => {
-    setActiveLocation(activeLocation === location ? null : location);
+    setActiveLocation(selectedLocation === location ? null : location);
+  };
+
+  const handleBookNowClick = () => {
+    if (selectedLocation) {
+      // router.push({pathname: `/checkout`, query: { id: selectedLocation.id }});
+      // router.push(`/checkout`);
+      router.push(`/checkout?id=${selectedLocation.id}`);
+    }
   };
 
   return (
@@ -42,14 +52,12 @@ export default function MobileLayout() {
                   <span className="text-2xl font-bold">{location.name}</span>
                 </div>
               </div>
-              {activeLocation === location && (
+              {selectedLocation === location && (
                 <div className="mt-2 p-4 bg-gray-800 rounded-lg">
                   <p>Details about {location.name}</p>
-                  <a href={location.link}>
-                    <button className="mt-2 px-4 py-2 bg-white text-black font-bold rounded">
-                      Book Now
-                    </button>
-                  </a>
+                  <button onClick={handleBookNowClick}  className="mt-2 px-4 py-2 bg-white text-black font-bold rounded">
+                    Book Now
+                  </button>
                 </div>
               )}
             </div>

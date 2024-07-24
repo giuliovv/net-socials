@@ -10,7 +10,7 @@ export async function POST(request) {
 
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(price * 100),
-      currency: 'usd',
+      currency: 'gbp',
       metadata: {
         locationId,
         locationName,
