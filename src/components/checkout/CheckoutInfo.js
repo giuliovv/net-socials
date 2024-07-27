@@ -1,4 +1,4 @@
-// src/components/CheckoutInfo.js
+// src/components/checkout/CheckoutInfo.js
 export default function CheckoutInfo({ location, bookingCount }) {
   return (
     <div className="p-6 bg-gray-800 text-white rounded-lg mb-6">

@@ -1,11 +1,11 @@
-// src/components/CheckoutForm.js
+// src/components/checkout/CheckoutForm.js
 
 import { useState } from 'react';
 import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import { useRouter } from 'next/navigation';
-import { firestore } from '../firebase';
+import { firestore } from '../../firebase';
 import { doc, setDoc, collection, Timestamp } from 'firebase/firestore';
-import { encodeParams } from '../utils/encodeParams';
+import { encodeParams } from '../../utils/encodeParams';
 
 export default function CheckoutForm({ clientSecret, location }) {
   const stripe = useStripe();

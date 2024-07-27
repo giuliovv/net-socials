@@ -1,6 +1,6 @@
 // src/app/checkout/page.js
 
-import CheckoutClient from '../../components/CheckoutClient';
+import CheckoutClient from '../../components/checkout/CheckoutClient';
 import Header from '../../components/homepage/Header';
 import Footer from '../../components/homepage/Footer';
 

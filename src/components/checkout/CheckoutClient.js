@@ -1,4 +1,4 @@
-// src/components/CheckoutClient.js
+// src/components/checkout/CheckoutClient.js
 "use client"
 
 import { useState, useEffect } from 'react';
@@ -8,9 +8,9 @@ import { Elements } from '@stripe/react-stripe-js';
 import { Suspense } from 'react';
 import CheckoutForm from './CheckoutForm';
 import CheckoutInfo from './CheckoutInfo';
-import { decodeParams } from '../utils/decodeParams';
+import { decodeParams } from '../../utils/decodeParams';
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
-import { firestore } from '../firebase';
+import { firestore } from '../../firebase';
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY);
 

@@ -1,47 +1,27 @@
-// components/GroupedBookingsList.js
+// src/components/GroupedBookingsList.js
 "use client"
 
 import { useEffect, useState } from 'react';
-import { collection, getDocs, query, where, Timestamp } from 'firebase/firestore';
-import { firestore } from '../firebase';
+import { useBookings } from '../context/BookingsContext';
 
 const GroupedBookingsList = () => {
+  const { bookings, timeFrame, setTimeFrame } = useBookings();
   const [groupedBookings, setGroupedBookings] = useState({});
-  const [timeFrame, setTimeFrame] = useState('future'); // Default to show only future bookings
 
   useEffect(() => {
-    const fetchBookings = async () => {
-      try {
-        const bookingsCollection = collection(firestore, 'bookings');
-        let q;
-
-        if (timeFrame === 'future') {
-          q = query(bookingsCollection, where('date', '>=', Timestamp.fromDate(new Date())));
-        } else {
-          const pastDate = new Date();
-          pastDate.setMonth(pastDate.getMonth() - Number(timeFrame));
-          q = query(bookingsCollection, where('date', '>=', Timestamp.fromDate(pastDate)));
-        }
-
-        const querySnapshot = await getDocs(q);
-        const bookingsList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-        const grouped = bookingsList.reduce((acc, booking) => {
-          const date = new Date(booking.date.seconds * 1000).toLocaleDateString();
-          if (!acc[date]) acc[date] = {};
-          if (!acc[date][booking.locationName]) acc[date][booking.locationName] = [];
-          acc[date][booking.locationName].push(booking);
-          return acc;
-        }, {});
-
-        setGroupedBookings(grouped);
-      } catch (error) {
-        console.error('Error fetching bookings: ', error);
-      }
+    const groupBookings = (bookingsList) => {
+      const grouped = bookingsList.reduce((acc, booking) => {
+        const date = new Date(booking.date.seconds * 1000).toLocaleDateString();
+        if (!acc[date]) acc[date] = {};
+        if (!acc[date][booking.locationName]) acc[date][booking.locationName] = [];
+        acc[date][booking.locationName].push(booking);
+        return acc;
+      }, {});
+      setGroupedBookings(grouped);
     };
 
-    fetchBookings();
-  }, [timeFrame]);
+    groupBookings(bookings);
+  }, [bookings]);
 
   const handleTimeFrameChange = (e) => {
     setTimeFrame(e.target.value);
