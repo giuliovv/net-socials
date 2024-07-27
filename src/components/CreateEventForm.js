@@ -6,8 +6,10 @@ import { collection, addDoc } from 'firebase/firestore';
 import { firestore, auth } from '../firebase';
 import { locations } from '../utils/constants';
 import { slugify } from '../utils/slugify';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
-const CreateEventForm = () => {
+const CreateEventForm = ({ onEventCreated }) => {
   const user = auth.currentUser;
   const [date, setDate] = useState('');
   const [useSuggestedLocation, setUseSuggestedLocation] = useState(true);
@@ -17,7 +19,7 @@ const CreateEventForm = () => {
   const [newLocationImage, setNewLocationImage] = useState(locations[0].image);
   const [newLocationCoordinates, setNewLocationCoordinates] = useState({ x: 0, y: 0 });
   const [newLocationPrice, setNewLocationPrice] = useState(0);
-  const [capacity, setCapacity] = useState();
+  const [capacity, setCapacity] = useState(60);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -64,15 +66,22 @@ const CreateEventForm = () => {
       setNewLocationImage(locations[0].image);
       setNewLocationCoordinates({ x: 0, y: 0 });
       setNewLocationPrice(0);
-      setCapacity(capacity);
+      setCapacity(60);
+
+      // Trigger the event creation callback
+      onEventCreated();
+
+      // Show success toast notification
+      toast.success('Event created successfully!');
     } catch (error) {
       setError('Error creating event: ' + error.message);
+      toast.error('Error creating event: ' + error.message);
     }
   };
 
   return (
     <form onSubmit={handleSubmit} className="p-4 bg-gray-800 rounded-lg mt-4">
-      <h2 className="text-2xl font-bold mb-4">Create New Tennis Event</h2>
+      <h2 className="text-2xl font-bold mb-4">Create New Event</h2>
       {error && <p className="mb-4 text-red-500">{error}</p>}
       <div className="mb-2">
         <label className="block text-white">Date:</label>
