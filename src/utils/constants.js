@@ -30,8 +30,8 @@ export const locations = [
     capacity: 60,
   },
   {
-    id: slugify("Queen's Club"),
-    name: "Queen's Club",
+    id: slugify("Clapham Commons"),
+    name: "Clapham Commons",
     image: '/images/queens-club.jpg',
     coordinates: { x: 30, y: 60 },
     link: "https://www.tickettailor.com/events/netsocials/1324515",
