@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 
-const DesktopLayout = dynamic(() => import('../components/DesktopLayout'), { ssr: false });
-const MobileLayout = dynamic(() => import('../components/MobileLayout'), { ssr: false });
+const DesktopLayout = dynamic(() => import('../components/homepage/DesktopLayout'), { ssr: false });
+const MobileLayout = dynamic(() => import('../components/homepage/MobileLayout'), { ssr: false });
 
 export default function Home() {
   const [isMobile, setIsMobile] = useState(false);

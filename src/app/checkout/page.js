@@ -1,8 +1,8 @@
 // src/app/checkout/page.js
 
 import CheckoutClient from '../../components/CheckoutClient';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
+import Header from '../../components/homepage/Header';
+import Footer from '../../components/homepage/Footer';
 
 export default function CheckoutPage() {
   return (

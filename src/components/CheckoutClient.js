@@ -19,7 +19,7 @@ function CheckoutContent() {
   useEffect(() => {
     const id = searchParams.get('id');
     if (id) {
-      const selectedLocation = locations.find(loc => loc.id === parseInt(id));
+      const selectedLocation = locations.find(loc => loc.id === id);
       setLocation(selectedLocation);
     }
   }, [searchParams]);

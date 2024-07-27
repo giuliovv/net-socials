@@ -2,17 +2,28 @@
 "use client"
 
 import { useEffect, useState } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, query, where, Timestamp } from 'firebase/firestore';
 import { firestore } from '../firebase';
 
 const GroupedBookingsList = () => {
   const [groupedBookings, setGroupedBookings] = useState({});
+  const [timeFrame, setTimeFrame] = useState('future'); // Default to show only future bookings
 
   useEffect(() => {
     const fetchBookings = async () => {
       try {
         const bookingsCollection = collection(firestore, 'bookings');
-        const querySnapshot = await getDocs(bookingsCollection);
+        let q;
+
+        if (timeFrame === 'future') {
+          q = query(bookingsCollection, where('date', '>=', Timestamp.fromDate(new Date())));
+        } else {
+          const pastDate = new Date();
+          pastDate.setMonth(pastDate.getMonth() - Number(timeFrame));
+          q = query(bookingsCollection, where('date', '>=', Timestamp.fromDate(pastDate)));
+        }
+
+        const querySnapshot = await getDocs(q);
         const bookingsList = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
         const grouped = bookingsList.reduce((acc, booking) => {
@@ -30,11 +41,29 @@ const GroupedBookingsList = () => {
     };
 
     fetchBookings();
-  }, []);
+  }, [timeFrame]);
+
+  const handleTimeFrameChange = (e) => {
+    setTimeFrame(e.target.value);
+  };
 
   return (
     <div className="p-4">
       <h2 className="text-2xl font-bold mb-4">Registered People</h2>
+      <div className="mb-4">
+        <label className="block text-white mb-2">Show Bookings:</label>
+        <select
+          value={timeFrame}
+          onChange={handleTimeFrameChange}
+          className="w-full p-2 rounded bg-gray-700 text-white"
+        >
+          <option value="future">Future Bookings</option>
+          <option value="1">Last 1 Month</option>
+          <option value="3">Last 3 Months</option>
+          <option value="6">Last 6 Months</option>
+          <option value="12">Last 12 Months</option>
+        </select>
+      </div>
       {Object.keys(groupedBookings).map(date => (
         <details key={date} className="mb-2">
           <summary className="cursor-pointer bg-gray-700 text-white p-2 rounded">{date}</summary>
@@ -44,7 +73,7 @@ const GroupedBookingsList = () => {
               <ul className="ml-4 list-disc list-inside">
                 {groupedBookings[date][location].map(booking => (
                   <li key={booking.id} className="text-white">
-                    Name: {booking.person.name}, Level: {booking.person.level}
+                    {booking.person.name} | {booking.person.level}
                   </li>
                 ))}
               </ul>
