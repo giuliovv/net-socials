@@ -1,4 +1,3 @@
-// src/components/MobileLayout.js
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -50,6 +49,7 @@ export default function MobileLayout() {
       name: location.name,
       price: location.price,
       date: new Date(selectedEvent.date.seconds * 1000),
+      capacity: location.capacity
     };
     const encodedParams = encodeParams(params);
     router.push(`/checkout?data=${encodedParams}`);
@@ -57,6 +57,11 @@ export default function MobileLayout() {
 
   const getBookingCountForLocation = (locationId) => {
     return bookings.filter(booking => booking.locationId === locationId).length;
+  };
+
+  const isEventSoldOut = (event) => {
+    const bookingCount = getBookingCountForLocation(event.location.id);
+    return bookingCount >= event.location.capacity;
   };
 
   const generateDescription = (locationId) => {
@@ -99,9 +104,13 @@ export default function MobileLayout() {
                   <div className="mt-2 p-4 bg-gray-800 rounded-lg">
                     <p>{event.location.name}, {new Date(event.date.seconds * 1000).toLocaleString()}</p>
                     {generateDescription(event.location.id)}
-                    <button onClick={() => handleBookNowClick(event)} className="mt-2 px-4 py-2 bg-white text-black font-bold rounded">
-                      Book Now
-                    </button>
+                    {isEventSoldOut(event) ? (
+                      <span className="mt-2 px-4 py-2 bg-red-500 text-white font-bold rounded">Sold Out</span>
+                    ) : (
+                      <button onClick={() => handleBookNowClick(event)} className="mt-2 px-4 py-2 bg-white text-black font-bold rounded">
+                        Book Now
+                      </button>
+                    )}
                   </div>
                 )}
               </div>

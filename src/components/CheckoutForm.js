@@ -5,6 +5,7 @@ import { useStripe, useElements, CardElement } from '@stripe/react-stripe-js';
 import { useRouter } from 'next/navigation';
 import { firestore } from '../firebase';
 import { doc, setDoc, collection, Timestamp } from 'firebase/firestore';
+import { encodeParams } from '../utils/encodeParams';
 
 export default function CheckoutForm({ clientSecret, location }) {
   const stripe = useStripe();
@@ -53,15 +54,23 @@ export default function CheckoutForm({ clientSecret, location }) {
       await setDoc(bookingRef, {
         locationId: location.id,
         locationName: location.name,
-        date: Timestamp.fromDate(location.date), // Use the date from the location object
+        date: Timestamp.fromDate(location.date),
         person: {
           name,
           level: tennisLevel,
         },
       });
 
-      // Redirect to success page
-      router.push('/success');
+      const params = encodeParams({
+        id: location.id,
+        name: location.name,
+        price: location.price,
+        date: location.date,
+        capacity: location.capacity,
+      });
+
+      // Redirect to success page with encoded params
+      router.push(`/success?data=${params}`);
     }
 
     // Reset form
@@ -85,7 +94,7 @@ export default function CheckoutForm({ clientSecret, location }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 bg-gray-900 p-6 rounded-lg">
+    <form onSubmit={handleSubmit} className="space-y-4">
       <div>
         <label htmlFor="name" className="block text-sm font-medium text-white">Name</label>
         <input

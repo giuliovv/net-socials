@@ -1,4 +1,3 @@
-// src/components/DesktopLayout.js
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
@@ -73,6 +72,7 @@ export default function DesktopLayout() {
       name: location.name,
       price: location.price,
       date: new Date(selectedEvent.date.seconds * 1000),
+      capacity: location.capacity
     };
     const encodedParams = encodeParams(params);
     router.push(`/checkout?data=${encodedParams}`);
@@ -80,6 +80,11 @@ export default function DesktopLayout() {
 
   const getBookingCountForLocation = (locationId) => {
     return bookings.filter(booking => booking.locationId === locationId).length;
+  };
+
+  const isEventSoldOut = (event) => {
+    const bookingCount = getBookingCountForLocation(event.location.id);
+    return bookingCount >= event.location.capacity;
   };
 
   const generateDescription = (locationId) => {
@@ -124,15 +129,19 @@ export default function DesktopLayout() {
                     />
                     <div className="absolute inset-0 bg-black bg-opacity-30 flex flex-col items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300">
                       <span className="text-2xl font-bold">{event.location.name}</span>
-                      <button 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleBookNowClick();
-                        }}
-                        className="mt-4 px-4 py-2 bg-white text-black font-bold hover:bg-opacity-80 transition-colors duration-300"
-                      >
-                        Book Now
-                      </button>
+                      {isEventSoldOut(event) ? (
+                        <span className="mt-4 px-4 py-2 bg-red-500 text-white font-bold rounded">Sold Out</span>
+                      ) : (
+                        <button 
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleBookNowClick();
+                          }}
+                          className="mt-4 px-4 py-2 bg-white text-black font-bold hover:bg-opacity-80 transition-colors duration-300"
+                        >
+                          Book Now
+                        </button>
+                      )}
                     </div>
                   </div>
                 </div>
