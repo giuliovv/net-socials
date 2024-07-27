@@ -3,7 +3,8 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { collection, getDocs, query, where, Timestamp } from 'firebase/firestore';
-import { firestore } from '../../firebase'; // Make sure this import is correct
+import { firestore } from '../../firebase';
+import { encodeParams } from '../../utils/encodeParams';
 import Header from './Header';
 import Footer from './Footer';
 
@@ -40,10 +41,18 @@ export default function MobileLayout() {
     setActiveLocation(selectedLocation === location ? null : location);
   };
 
-  const handleBookNowClick = () => {
-    if (selectedLocation) {
-      router.push(`/checkout?id=${selectedLocation.id}`);
-    }
+  const handleBookNowClick = (selectedEvent) => {
+    if (!selectedEvent) return;
+
+    const location = selectedEvent.location;
+    const params = {
+      id: location.id,
+      name: location.name,
+      price: location.price,
+      date: new Date(selectedEvent.date.seconds * 1000),
+    };
+    const encodedParams = encodeParams(params);
+    router.push(`/checkout?data=${encodedParams}`);
   };
 
   const getBookingCountForLocation = (locationId) => {
@@ -90,7 +99,7 @@ export default function MobileLayout() {
                   <div className="mt-2 p-4 bg-gray-800 rounded-lg">
                     <p>{event.location.name}, {new Date(event.date.seconds * 1000).toLocaleString()}</p>
                     {generateDescription(event.location.id)}
-                    <button onClick={handleBookNowClick} className="mt-2 px-4 py-2 bg-white text-black font-bold rounded">
+                    <button onClick={() => handleBookNowClick(event)} className="mt-2 px-4 py-2 bg-white text-black font-bold rounded">
                       Book Now
                     </button>
                   </div>

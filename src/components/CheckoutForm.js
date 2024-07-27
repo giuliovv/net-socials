@@ -6,15 +6,6 @@ import { useRouter } from 'next/navigation';
 import { firestore } from '../firebase';
 import { doc, setDoc, collection, Timestamp } from 'firebase/firestore';
 
-const getNextFriday = (date) => {
-  const dayOfWeek = date.getUTCDay();
-  const daysUntilFriday = (5 - dayOfWeek + 7) % 7 || 7;
-  const nextFriday = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()));
-  nextFriday.setUTCDate(date.getUTCDate() + daysUntilFriday);
-  nextFriday.setUTCHours(23, 30, 0, 0); // Set time to 11:30 PM UTC
-  return nextFriday;
-};
-
 export default function CheckoutForm({ clientSecret, location }) {
   const stripe = useStripe();
   const elements = useElements();
@@ -58,12 +49,11 @@ export default function CheckoutForm({ clientSecret, location }) {
     }
 
     if (paymentIntent.status === 'succeeded') {
-      const nextFriday = getNextFriday(new Date());
       const bookingRef = doc(collection(firestore, 'bookings'));
       await setDoc(bookingRef, {
         locationId: location.id,
         locationName: location.name,
-        date: Timestamp.fromDate(nextFriday),
+        date: Timestamp.fromDate(location.date), // Use the date from the location object
         person: {
           name,
           level: tennisLevel,
@@ -95,7 +85,7 @@ export default function CheckoutForm({ clientSecret, location }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
+    <form onSubmit={handleSubmit} className="space-y-4 bg-gray-900 p-6 rounded-lg">
       <div>
         <label htmlFor="name" className="block text-sm font-medium text-white">Name</label>
         <input

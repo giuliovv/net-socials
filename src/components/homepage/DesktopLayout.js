@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { collection, getDocs, query, where, Timestamp } from 'firebase/firestore';
 import { firestore } from '../../firebase';
+import { encodeParams } from '../../utils/encodeParams';
 import Header from './Header';
 import Footer from './Footer';
 
@@ -64,9 +65,17 @@ export default function DesktopLayout() {
   };
 
   const handleBookNowClick = () => {
-    if (selectedEvent) {
-      router.push(`/checkout?id=${selectedEvent.location.id}`);
-    }
+    if (!selectedEvent) return;
+
+    const location = selectedEvent.location;
+    const params = {
+      id: location.id,
+      name: location.name,
+      price: location.price,
+      date: new Date(selectedEvent.date.seconds * 1000),
+    };
+    const encodedParams = encodeParams(params);
+    router.push(`/checkout?data=${encodedParams}`);
   };
 
   const getBookingCountForLocation = (locationId) => {
